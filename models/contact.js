@@ -50,6 +50,46 @@ const contactSchema = new mongoose.Schema({
 
 });
 
+contactSchema.set('validate', {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["firstname", "lastname", "contact_type"],
+            properties: {
+                firstname: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                lastname: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                contact_type: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                email: {
+                    bsonType: "string",
+                    description: "must be a string if present",
+                    pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+                },
+                phone: {
+                    bsonType: "string",
+                    description: "must be a string if present",
+                    pattern: /^\d{3}-\d{3}-\d{4}$|^\d{1,3}-\d{3}-\d{3}-\d{4}$/
+                },
+                last_contact_dt: {
+                    bsonType: "date",
+                    description: "must be a date if present",
+                    format: "date"
+                }
+            }
+        }
+    },
+    validationLevel: "moderate", // validation level (optional)
+    validationAction: "error"    // validation action (optional)
+});
+
 const Contact = mongoose.model('Contact', contactSchema)
 
 module.exports =  Contact;

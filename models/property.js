@@ -50,6 +50,56 @@ const propertySchema = new mongoose.Schema({
      
 });
 
+// Set MongoDB native validation rules
+propertySchema.set('validate', {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["address", "city", "state", "zipcode", "propertyType"],
+            properties: {
+                address: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                city: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                state: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                zipcode: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                county: {
+                    bsonType: "string",
+                    description: "must be a string if present"
+                },
+                parcelNumber: {
+                    bsonType: "string",
+                    description: "must be a string if present",
+                    pattern: /^\d{4}-\d{3}-\d{3}$/
+                },
+                yearBuilt: {
+                    bsonType: "int",
+                    description: "must be an integer if present",
+                    minimum: 1800, // Example minimum year
+                    maximum: new Date().getFullYear() // Example maximum year (current year)
+                },
+                propertyType: {
+                    bsonType: "string",
+                    enum: ['Single-Family', 'Multi-Family', 'Mix-Use'],
+                    description: "must be one of the enumerated values"
+                }
+            }
+        }
+    },
+    validationLevel: "moderate", // validation level (optional)
+    validationAction: "error"    // validation action (optional)
+});
+
 const Property = mongoose.model('Property', propertySchema)
 
 module.exports =  Property;

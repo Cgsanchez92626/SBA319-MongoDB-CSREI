@@ -68,15 +68,16 @@ app.get('/property/seed', async (req, res) => {
 
 // Error handling middleware - should be defined after all route handlers
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error stack trace for debugging
-
-    // Check if it's a specific error (e.g., DocumentNotFoundError)
-    if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).json({ message: 'Resource Not Found' });
-    }
-
-    // For generic errors or unhandled errors, return a generic 500 error
-    res.status(500).json({ message: 'Server Error' });
+        // Mongoose validation error
+        if (err.name === 'ValidationError') {
+            const errors = {};
+            Object.keys(err.errors).forEach((key) => {
+                errors[key] = err.errors[key].message;
+            });
+            return res.status(400).json({ errors });
+        }
+        // Other types of errors
+        return res.status(500).json({ error: err.message });
 });
 
 // Start server

@@ -23,6 +23,32 @@ const agentSchema = new mongoose.Schema({
     }
 });
 
+// Set MongoDB native validation rules
+agentSchema.set('validate', {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required:  ["firstname", "lastname", "email"],
+            properties: {
+                firstname: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                lastname: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                email: {
+                    bsonType: "string",
+                    description: "must be a string and is required",
+                    pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+                }
+            }
+        }
+    },
+    validationLevel: "moderate", // validation level (optional)
+    validationAction: "error"    // validation action (optional)
+});
 const Agent = mongoose.model('Agent', agentSchema)
 
 module.exports =  Agent;
