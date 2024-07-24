@@ -5,7 +5,7 @@ const PORT = process.env.PORT
 const conn = require('./DB/conn')
 
 //Import Agent Data
-const agentRoutes = require('./routes/Agent')
+const agentRoutes = require('./routes/agent')
 const Agent = require('./models/agent')
 const starterAgents = require('./DB/agentseed')
 
